@@ -1,0 +1,44 @@
+<h1>Your Wallet</h1>
+
+<div class="wallet-info">
+  <p>
+    <strong>Current Balance:</strong>
+    <%= number_to_currency(@wallet.balance) %>
+  </p>
+</div>
+
+<% if @loans.any? %>
+  <h2>Active Loans</h2>
+  <table class="loans-table">
+    <thead>
+      <tr>
+        <th>Loan ID</th>
+        <th>Principal</th>
+        <th>Interest Rate</th>
+        <th>Accrued Interest</th>
+        <th>Total Due</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @loans.each do |loan| %>
+        <tr>
+          <td><%= loan.id %></td>
+          <td><%= number_to_currency(loan.principal_amount) %></td>
+          <td><%= loan.interest_rate %>%</td>
+          <td><%= number_to_currency(loan.accrued_interest) %></td>
+          <td><%= number_to_currency(loan.total_amount_due) %></td>
+          <td>
+            <%= link_to 'View Details', loan_path(loan) %>
+            <%= button_to 'Repay', repay_loan_path(loan), method: :put %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
+
+<div class="actions">
+  <%#= link_to 'Request New Loan', new_loan_path, class: 'button' %>
+  <%#= link_to 'View All Loans', loans_path, class: 'button' %>
+</div>

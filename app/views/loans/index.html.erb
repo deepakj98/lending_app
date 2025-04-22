@@ -1,0 +1,42 @@
+<h1>My Loans</h1>
+
+<% if @loans.present? %>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Principal</th>
+        <th>Interest Rate</th>
+        <th>Status</th>
+        <th>Created</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @loans.each do |loan| %>
+        <tr>
+          <td><%= loan.id %></td>
+          <td><%= number_to_currency(loan.principal_amount, unit: "₹", precision: 2) %></td>
+          <td><%= loan.interest_rate %>%</td>
+          <td><%= loan.state.humanize %></td>
+          <td><%= loan.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+          <td>
+            <%= link_to 'View Details', loan_path(loan) %>
+            <% if loan.state == 'open' %>
+              | <%= button_to 'Repay', repay_loan_path(loan), method: :put, class: 'button' %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p>No Loans.</p>
+<% end %>
+
+<div class="actions">
+	<% unless current_user&.admin? %>
+  	<%= link_to 'Request New Loan', new_loan_path, class: 'button' %>
+  <% end %>
+  <%= link_to 'Back to Wallet', wallet_path, class: 'button' %>
+</div>

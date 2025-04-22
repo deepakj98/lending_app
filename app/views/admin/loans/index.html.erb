@@ -1,0 +1,116 @@
+<h1>Admin Dashboard - Loans</h1>
+
+<h2>Pending Reviews</h2>
+<% if @pending_loans.present? %>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>User</th>
+        <th>Name</th>
+        <th>Principal</th>
+        <th>Interest Rate</th>
+        <th>Status</th>
+        <th>Requested On</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @pending_loans.each do |loan| %>
+        <tr>
+          <td><%= loan.id %></td>
+          <td><%= loan.user.email %></td>
+          <td><%= loan.user.name %></td>
+          <td><%= number_to_currency(loan.principal_amount, unit: "₹", precision: 2) %></td>
+          <td><%= loan.interest_rate %>%</td>
+          <td><%= loan.state.humanize %></td>
+          <td><%= loan.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+          <td>
+            <%= link_to 'Review', admin_loan_path(loan) %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p>No loans pending review.</p>
+<% end %>
+
+<h2>Active Loans</h2>
+<% if @active_loans.present? %>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Email</th>
+        <th>Name</th>
+        <th>Principal</th>
+        <th>Interest Rate</th>
+        <th>Accrued Interest</th>
+        <th>Total Due</th>
+        <th>Opened On</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @active_loans.each do |loan| %>
+        <tr>
+          <td><%= loan.id %></td>
+          <td><%= loan.user.email %></td>
+          <td><%= loan.user.name %></td>
+          <td><%= number_to_currency(loan.principal_amount, unit: "₹", precision: 2) %></td>
+          <td><%= loan.interest_rate %>%</td>
+          <td><%= number_to_currency(loan.accrued_interest, unit: "₹", precision: 2) %></td>
+          <td><%= number_to_currency(loan.total_amount_due, unit: "₹", precision: 2) %></td>
+          <td><%= loan.opened_at&.strftime("%Y-%m-%d %H:%M") || "N/A" %></td>
+          <td>
+            <%= link_to 'View Details', admin_loan_path(loan) %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p>No active loans.</p>
+<% end %>
+
+<h2>All Loans</h2>
+<% if @all_loans.present? %>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Email</th>
+        <th>Name</th>
+        <th>Principal</th>
+        <th>Interest Rate</th>
+        <th>Status</th>
+        <th>Created On</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @all_loans.each do |loan| %>
+        <tr>
+          <td><%= loan.id %></td>
+          <td><%= loan.user.email %></td>
+          <td><%= loan.user.name %></td>
+          <td><%= number_to_currency(loan.principal_amount, unit: "₹", precision: 2) %></td>
+          <td><%= loan.interest_rate %>%</td>
+          <td><%= loan.state.humanize %></td>
+          <td><%= loan.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+          <td>
+            <%= link_to 'View Details', admin_loan_path(loan) %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p>No loans in the system.</p>
+<% end %>
+
+<p>
+  <strong>Admin Wallet Balance:</strong> 
+  <%= number_to_currency(User.find_by(role: 'admin').wallet.balance, unit: "₹", precision: 2) %>
+</p>

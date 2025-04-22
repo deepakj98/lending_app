@@ -1,0 +1,29 @@
+<h1>Request a New Loan</h1>
+
+<%= form_with(model: @loan, local: true) do |form| %>
+  <% if @loan.errors.any? %>
+    <div id="error_explanation">
+      <h2>Errors prohibited this loan from being saved:</h2>
+      <ul>
+        <% @loan.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :principal_amount, "Principal Amount" %>
+    <%= form.number_field :principal_amount, step: 100, min: 0 %>
+  </div>
+
+  <div class="field">
+    <%= form.label :interest_rate, "Interest Rate (%)" %>
+    <%= form.number_field :interest_rate, step: 1, min: 0 %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit "Request Loan" %>
+    <%= link_to 'Cancel', loans_path, class: 'button' %>
+  </div>
+<% end %>

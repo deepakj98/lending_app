@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  loan: one
+  principal_amount: 9.99
+  interest_rate: 9.99
+  adjustment_type: MyString
+  notes: MyText
+
+two:
+  loan: two
+  principal_amount: 9.99
+  interest_rate: 9.99
+  adjustment_type: MyString
+  notes: MyText

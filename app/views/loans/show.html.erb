@@ -1,0 +1,139 @@
+<h1>Loan Details #<%= @loan.id %></h1>
+
+<div class="loan-info">
+  <p>
+    <strong>Principal Amount:</strong>
+    <%= number_to_currency(@loan.principal_amount, unit: "₹", precision: 2) %>
+  </p>
+
+  <p>
+    <strong>Interest Rate:</strong>
+    <%= @loan.interest_rate %>%
+  </p>
+
+  <p>
+    <strong>Status:</strong>
+    <%= @loan.state.humanize %>
+  </p>
+
+  <p>
+    <strong>Created On:</strong>
+    <%= @loan.created_at.strftime("%Y-%m-%d %H:%M") %>
+  </p>
+
+  <% if @loan.state == 'open' %>
+    <p>
+      <strong>Opened On:</strong>
+      <%= @loan.opened_at&.strftime("%Y-%m-%d %H:%M") || "N/A" %>
+    </p>
+    
+    <p>
+      <strong>Accrued Interest:</strong>
+      <%= number_to_currency(@loan.accrued_interest, unit: "₹", precision: 2) %>
+    </p>
+
+    <p>
+      <strong>Total Amount Due:</strong>
+      <%= number_to_currency(@loan.total_amount_due, unit: "₹", precision: 2) %>
+    </p>
+
+    <div class="actions">
+      <%= button_to 'Repay Loan', repay_loan_path(@loan), method: :put, data: { confirm: "Are you sure you want to repay this loan?" } %>
+    </div>
+  <% end %>
+
+  <% if @loan.state == 'closed' %>
+    <p>
+      <strong>Closed On:</strong>
+      <%= @loan.closed_at&.strftime("%Y-%m-%d %H:%M") || "N/A" %>
+    </p>
+    
+    <p>
+      <strong>Repaid Amount:</strong>
+      <%= number_to_currency(@loan.repaid_amount, unit: "₹", precision: 2) %>
+    </p>
+  <% end %>
+
+  <% if @loan.state == 'approved' %>
+    <h3>Loan Approval</h3>
+    <p>Your loan has been approved. Please confirm to receive the funds.</p>
+    
+    <div class="actions">
+      <%= button_to 'Accept Approval', accept_approval_loan_path(@loan), method: :put %>
+      <%= button_to 'Reject Approval', reject_approval_loan_path(@loan), method: :put, data: { confirm: "Are you sure you want to reject this loan approval?" } %>
+    </div>
+  <% end %>
+
+  <% if @loan.state == 'waiting_for_adjustment_acceptance' %>
+    <h3>Proposed Adjustment</h3>
+    <% latest_adjustment = @loan.loan_adjustments.order(created_at: :desc).first %>
+    <p>
+      <strong>New Principal Amount:</strong>
+      <%= number_to_currency(latest_adjustment.principal_amount, unit: "₹", precision: 2) %>
+    </p>
+    <p>
+      <strong>New Interest Rate:</strong>
+      <%= latest_adjustment.interest_rate %>%
+    </p>
+
+    <div class="actions">
+      <%= button_to 'Accept Adjustment', accept_adjustment_loan_path(@loan), method: :put %>
+      <%= button_to 'Reject Adjustment', reject_adjustment_loan_path(@loan), method: :put, data: { confirm: "Are you sure you want to reject this adjustment?" } %>
+    </div>
+    
+    <h4>Request Readjustment</h4>
+    <%= form_with(model: @loan, url: request_readjustment_loan_path(@loan), method: :put, local: true) do |form| %>
+      <div class="field">
+        <%= form.label :principal_amount, "Principal Amount (₹)" %>
+        <%= form.number_field :principal_amount, value: latest_adjustment.principal_amount, step: 1, min: 0 %>
+      </div>
+
+      <div class="field">
+        <%= form.label :interest_rate, "Interest Rate (%)" %>
+        <%= form.number_field :interest_rate, value: latest_adjustment.interest_rate, step: 1, min: 0 %>
+      </div>
+
+      <div class="actions">
+        <%= form.submit "Request Readjustment" %>
+      </div>
+    <% end %>
+  <% end %>
+</div>
+
+<h2>Adjustment History</h2>
+<% if @adjustments.present? %>
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Principal Amount</th>
+        <th>Interest Rate</th>
+        <th>Type</th>
+        <th>Made By</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @adjustments.each do |adjustment| %>
+        <tr>
+          <td><%= adjustment.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+          <td><%= number_to_currency(adjustment.principal_amount, unit: "₹", precision: 2) %></td>
+          <td><%= adjustment.interest_rate %>%</td>
+          <td><%= adjustment.adjustment_type.humanize %></td>
+          <td>
+            <% if adjustment.made_by_admin? %>
+              Admin
+            <% else %>
+              You
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p>No adjustments have been made to this loan.</p>
+<% end %>
+
+<div class="actions">
+  <%= link_to 'Back to Loans', loans_path, class: 'button' %>
+</div>

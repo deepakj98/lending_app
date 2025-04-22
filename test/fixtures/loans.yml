@@ -1,0 +1,21 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  principal_amount: 9.99
+  interest_rate: 9.99
+  accrued_interest: 9.99
+  repaid_amount: 9.99
+  state: MyString
+  opened_at: 2025-04-18 20:00:58
+  closed_at: 2025-04-18 20:00:58
+
+two:
+  user: two
+  principal_amount: 9.99
+  interest_rate: 9.99
+  accrued_interest: 9.99
+  repaid_amount: 9.99
+  state: MyString
+  opened_at: 2025-04-18 20:00:58
+  closed_at: 2025-04-18 20:00:58
