@@ -3,22 +3,24 @@
 
 * clone the repository
 `git clone https://github.com/deepakj98/lending_app.git`
-bundle install
+
+* run the bundler
+`bundle install`
 
 * create database
-rails db:create
+`rails db:create`
 
 * run migration
-rails db:migrate
+`rails db:migrate`
 
 * create admin
-rails db:seed
+`rails db:seed`
 
 * run the server
-  bin/rails server
+  `bin/rails server`
 
 * run the sidekiq server
-  bundle exec sidekiq
+  `bundle exec sidekiq`
 
 Note:
 * For user authentication `Devise` is used in the app
